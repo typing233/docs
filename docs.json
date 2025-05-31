@@ -9,6 +9,26 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["en/overview", "en/quickstart", "en/development"]
+          }
+        ]
+      },
+      {
+        "language": "cn",
+        "groups": [
+          {
+            "group": "开始",
+            "pages": ["cn/overview", "cn/quickstart", "cn/development"]
+          }
+        ]
+      }
+    ],
     "tabs": [
       {
         "tab": "Guides",
