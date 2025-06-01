@@ -1,0 +1,182 @@
+---
+title: "Get Task Status"
+api: "GET https://api.scenext.cn/api/get_status/{task_id}"
+description: "Query the status and progress of video generation tasks"
+---
+
+# Get Task Status
+
+This API is used to query the current status, progress, and results of video generation tasks.
+
+## Request
+
+<ParamField path="task_id" type="string" required>
+  Task ID returned from the create video interface
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Request status: `success` or `error`
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data object
+  
+  <Expandable title="Success Response">
+    <ResponseField name="task_id" type="string">
+      Task ID
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Task status:
+      - `IN_PROGRESS`: In progress
+      - `COMPLETED`: Completed
+      - `FAILED`: Failed
+    </ResponseField>
+    
+    <ResponseField name="progress" type="array">
+      Task progress information list
+    </ResponseField>
+    
+    <ResponseField name="result" type="array">
+      Task result (only exists when status is COMPLETED)
+    </ResponseField>
+  </Expandable>
+  
+  <Expandable title="Error Response">
+    <ResponseField name="messages" type="string">
+      Error message description
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Examples
+
+<RequestExample>
+
+```python Python
+import requests
+
+task_id = "12345"  # Your task ID
+url = f"https://api.scenext.cn/api/get_status/{task_id}"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const taskId = "12345";  // Your task ID
+const url = `https://api.scenext.cn/api/get_status/${taskId}`;
+const headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```bash cURL
+curl -X GET https://api.scenext.cn/api/get_status/12345 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json In Progress
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "IN_PROGRESS",
+        "progress": [
+            {
+                "id": "frame1",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+            },
+            {
+                "id": "frame2",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+            },
+            ...
+        ]
+    }
+}
+```
+
+```json Completed
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "COMPLETED",
+        "progress": [
+            {
+                "id": "frame1",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+            },
+            {
+                "id": "frame2",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+            },
+            ...
+        ],
+        "result": [
+            {
+                "type": "video",
+                "content": "https://oss.scenext.cn/Video/d988d4d9-72f0-4b76-97b0-ca974335dcf4/Manimed6e7bae-cb5d-4e75-a6ae-b4beced80c92.mp4?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749288010&Signature=CZRkEsLpWctM9MS3v7IbpRvMcKI%3D"
+            }
+        ]
+    }
+}
+```
+
+```json Failed
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "FAILED",
+        "result": [
+            {
+                "type": "text",
+                "content": "Task execution failed"
+            }
+        ]
+    }
+}
+```
+
+```json Error Response
+{
+    "status": "error",
+    "data": {
+        "messages": "Server error: Task not found"
+    }
+}
+```
+
+</ResponseExample>
+
+## Polling Recommendations
+
+We recommend polling task status in the following way:
+
+1. Query immediately after task creation
+2. Then query every 30 seconds
+3. Stop polling when status is `COMPLETED` or `FAILED`
+
+## Status Descriptions
+
+- **IN_PROGRESS**: Task is being processed, you can continue polling
+- **COMPLETED**: Task has been successfully completed, you can get the results
+- **FAILED**: Task processing failed, please check the error message

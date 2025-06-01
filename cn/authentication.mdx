@@ -1,0 +1,87 @@
+---
+title: "身份验证"
+description: "了解如何使用API密钥进行身份验证"
+---
+
+# 身份验证
+
+Scenext API使用Bearer Token进行身份验证。您需要在每个API请求的Header中包含您的API密钥。
+
+## 获取API密钥
+
+1. 登录 [scenext.cn](https://scenext.cn)
+2. 进入个人中心
+3. 找到"API Keys管理"
+4. 点击"创建API密钥"
+5. 复制并保存您的API密钥
+
+<Warning>
+请妥善保管您的API密钥，不要在客户端代码中暴露它。
+</Warning>
+
+## 使用API密钥
+
+在每个API请求中包含以下Header：
+
+```http
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+```
+
+## 示例
+
+### Python
+
+```python
+import requests
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(
+    "https://api.scenext.cn/api/gen_video",
+    headers=headers,
+    json=your_data
+)
+```
+
+### JavaScript
+
+```javascript
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+};
+
+fetch('https://api.scenext.cn/api/gen_video', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(your_data)
+});
+```
+
+### cURL
+
+```bash
+curl -X POST https://api.scenext.cn/api/gen_video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "问题", "answer": "参考答案"}'
+```
+
+## 错误处理
+
+如果身份验证失败，API将返回401状态码：
+
+```json
+{
+    "status": "error",
+    "data": {
+        "messages": "Unauthorized: Invalid API key"
+    }
+}
+```
+
+确保您的API密钥有效且格式正确。

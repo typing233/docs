@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Scenext 开发文档",
+  "name": "Scenext API 文档",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -15,7 +15,22 @@
         "groups": [
           {
             "group": "开始",
-            "pages": ["cn/overview", "cn/quickstart", "cn/development"]
+            "pages": ["cn/overview", "cn/quickstart", "cn/authentication"]
+          },
+          {
+            "group": "API 接口",
+            "pages": [
+              "cn/api-reference/generate-video",
+              "cn/api-reference/get-status",
+              "cn/api-reference/webhook"
+            ]
+          },
+          {
+            "group": "集成指南",
+            "pages": [
+              "cn/pricing",
+              "cn/signature-verification"
+            ]
           }
         ]
       },
@@ -24,52 +39,21 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["en/overview", "en/quickstart", "en/development"]
-          }
-        ]
-      }
-    ],
-    "tabs": [
-      {
-        "tab": "Guides",
-        "groups": [
+            "pages": ["en/overview", "en/quickstart", "en/authentication"]
+          },
           {
-            "group": "Get Started",
+            "group": "API Reference",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "en/api-reference/generate-video",
+              "en/api-reference/get-status",
+              "en/api-reference/webhook"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Integration Guide",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "en/pricing",
+              "en/signature-verification"
             ]
           }
         ]
@@ -89,7 +73,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
+      "label": "立即体验",
       "href": "https://scenext.cn"
     }
   }

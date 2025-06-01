@@ -1,0 +1,157 @@
+---
+title: "Generate Video"
+api: "POST https://api.scenext.cn/api/gen_video"
+description: "Create a video generation task"
+---
+
+# Generate Video
+
+This API is used to create video generation tasks.
+
+## Request
+
+question and questionImages must include at least one.
+
+<ParamField body="question" type="string" required>
+  Question content (text format)
+</ParamField>
+
+<ParamField body="questionImages" type="array">
+  Question content (image format), input image URLs or base64
+</ParamField>
+
+<ParamField body="answer" type="string" required>
+  Reference answer (text format): ensures accurate explanatory content generation
+</ParamField>
+
+<ParamField body="answerImages" type="array">
+  Reference answer (image format), input image URLs or base64
+</ParamField>
+
+<ParamField body="quality" type="string" default="m">
+  Video quality level:
+  - `h`: High quality
+  - `m`: Medium quality (default)
+  - `l`: Low quality
+</ParamField>
+
+<ParamField body="notify_url" type="string">
+  Callback URL when the task is completed (optional), complete URL including http
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Request status: `success` or `error`
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data object
+  
+  <Expandable title="Success Response">
+    <ResponseField name="task_id" type="string">
+      Task ID, used to query task status
+    </ResponseField>
+  </Expandable>
+  
+  <Expandable title="Error Response">
+    <ResponseField name="messages" type="string">
+      Error message description
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Examples
+
+<RequestExample>
+
+```python Python
+import requests
+
+url = "https://api.scenext.cn/api/gen_video"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "question": "What is Fourier series",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = "https://api.scenext.cn/api/gen_video";
+const headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+};
+
+const data = {
+    question: "What is Fourier series",
+    answer: "",
+    questionImages: [],
+    answerImages: [],
+    quality: "m",
+    notify_url: "https://your-domain.com/webhook"
+};
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```bash cURL
+curl -X POST https://api.scenext.cn/api/gen_video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What is Fourier series",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345"
+    }
+}
+```
+
+```json Error Response
+{
+    "status": "error",
+    "data": {
+        "messages": "The video generation interface response is abnormal: 400 - Bad Request"
+    }
+}
+```
+
+</ResponseExample>
+
+## Notes
+
+- Video generation is an asynchronous process that may take from a few minutes to several tens of minutes
+- Please use the returned `task_id` to query task status
+- If `notify_url` is provided, a callback notification will be sent when the task is completed

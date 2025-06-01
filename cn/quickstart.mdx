@@ -1,0 +1,61 @@
+---
+title: "快速开始"
+description: "几分钟内开始使用Scenext API生成视频"
+---
+
+# 快速开始
+
+本指南将帮助您在几分钟内开始使用Scenext API。
+
+## 第一步：注册账户
+
+访问 [scenext.cn](https://scenext.cn) 注册您的账户。
+
+## 第二步：获取API密钥
+
+1. 登录后进入个人中心
+2. 找到"API Keys管理"
+3. 点击"创建API密钥"
+4. 保存您的API密钥（请妥善保管）
+
+## 第三步：发起第一个请求
+
+使用以下示例代码创建您的第一个视频：
+
+```python
+import requests
+
+url = "https://api.scenext.cn/api/gen_video"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+data = {
+    "question": "讲解一下傅里叶级数",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+## 第四步：查询生成状态
+
+```python
+task_id = "your_task_id"  # 从上一步获取的task_id
+status_url = f"https://api.scenext.cn/api/get_status/{task_id}"
+
+response = requests.get(status_url, headers=headers)
+print(response.json())
+```
+
+## 下一步
+
+- 了解详细的[API参考文档](/cn/api-reference/generate-video)
+- 学习如何[验证回调签名](/cn/signature-verification)
+- 查看[计费说明](/cn/pricing)

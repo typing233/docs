@@ -1,0 +1,157 @@
+---
+title: "生成视频"
+api: "POST https://api.scenext.cn/api/gen_video"
+description: "创建视频生成任务"
+---
+
+# 生成视频
+
+此API用于创建视频生成任务。
+
+## 请求
+
+question和questionImages中至少输入一个。
+
+<ParamField body="question" type="string" required>
+  问题内容（文本形式）
+</ParamField>
+
+<ParamField body="questionImages" type="array">
+  问题内容（图片形式），输入图片的URL或者base64
+</ParamField>
+
+<ParamField body="answer" type="string" required>
+  参考答案（文本形式）：确保生成的讲解内容准确
+</ParamField>
+
+<ParamField body="answerImages" type="array">
+  参考答案（图片形式）,输入图片的URL或者base64
+</ParamField>
+
+<ParamField body="quality" type="string" default="m">
+  视频质量等级：
+  - `h`: 高质量
+  - `m`: 中等质量（默认）
+  - `l`: 低质量
+</ParamField>
+
+<ParamField body="notify_url" type="string">
+  任务完成时的回调地址（可选）,包含http的完整URL
+</ParamField>
+
+## 响应
+
+<ResponseField name="status" type="string">
+  请求状态：`success` 或 `error`
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  响应数据对象
+  
+  <Expandable title="成功响应">
+    <ResponseField name="task_id" type="string">
+      任务ID，用于查询任务状态
+    </ResponseField>
+  </Expandable>
+  
+  <Expandable title="错误响应">
+    <ResponseField name="messages" type="string">
+      错误信息描述
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## 示例
+
+<RequestExample>
+
+```python Python
+import requests
+
+url = "https://api.scenext.cn/api/gen_video"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "question": "什么是傅里叶级数",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = "https://api.scenext.cn/api/gen_video";
+const headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+};
+
+const data = {
+    question: "什么是傅里叶级数",
+    answer: "",
+    questionImages: [],
+    answerImages: [],
+    quality: "m",
+    notify_url: "https://your-domain.com/webhook"
+};
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```bash cURL
+curl -X POST https://api.scenext.cn/api/gen_video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "什么是傅里叶级数",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 成功响应
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345"
+    }
+}
+```
+
+```json 错误响应
+{
+    "status": "error",
+    "data": {
+        "messages": "The video generation interface response is abnormal: 400 - Bad Request"
+    }
+}
+```
+
+</ResponseExample>
+
+## 注意事项
+
+- 视频生成是异步过程，可能需要几分钟到几十分钟不等
+- 请使用返回的 `task_id` 查询任务状态
+- 如果提供了 `notify_url`，任务完成时会发送回调通知

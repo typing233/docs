@@ -1,0 +1,61 @@
+---
+title: "Quick Start"
+description: "Start using Scenext API to generate videos in minutes"
+---
+
+# Quick Start
+
+This guide will help you start using the Scenext API in minutes.
+
+## Step 1: Register Account
+
+Visit [scenext.cn](https://scenext.cn) to register your account.
+
+## Step 2: Get API Key
+
+1. Log in and go to your personal center
+2. Find "API Keys Management"
+3. Click "Create API Key"
+4. Save your API key (please keep it safe)
+
+## Step 3: Make Your First Request
+
+Use the following example code to create your first video:
+
+```python
+import requests
+
+url = "https://api.scenext.cn/api/gen_video"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+data = {
+    "question": "Explain Fourier series",
+    "answer": "",
+    "questionImages": [],
+    "answerImages": [],
+    "quality": "m",
+    "notify_url": "https://your-domain.com/webhook"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+## Step 4: Query Generation Status
+
+```python
+task_id = "your_task_id"  # task_id obtained from the previous step
+status_url = f"https://api.scenext.cn/api/get_status/{task_id}"
+
+response = requests.get(status_url, headers=headers)
+print(response.json())
+```
+
+## Next Steps
+
+- Learn about detailed [API Reference](/en/api-reference/generate-video)
+- Learn how to [verify callback signatures](/en/signature-verification)
+- Check [pricing information](/en/pricing)

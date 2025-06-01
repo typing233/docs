@@ -1,0 +1,182 @@
+---
+title: "查询任务状态"
+api: "GET https://api.scenext.cn/api/get_status/{task_id}"
+description: "查询视频生成任务的状态和进度"
+---
+
+# 查询任务状态
+
+此API用于查询视频生成任务的当前状态、进度和结果。
+
+## 请求
+
+<ParamField path="task_id" type="string" required>
+  任务ID，从创建视频接口返回
+</ParamField>
+
+## 响应
+
+<ResponseField name="status" type="string">
+  请求状态：`success` 或 `error`
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  响应数据对象
+  
+  <Expandable title="成功响应">
+    <ResponseField name="task_id" type="string">
+      任务ID
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      任务状态：
+      - `IN_PROGRESS`: 进行中
+      - `COMPLETED`: 已完成
+      - `FAILED`: 已失败
+    </ResponseField>
+    
+    <ResponseField name="progress" type="array">
+      任务进度信息列表
+    </ResponseField>
+    
+    <ResponseField name="result" type="array">
+      任务结果（仅在状态为 COMPLETED 时存在）
+    </ResponseField>
+  </Expandable>
+  
+  <Expandable title="错误响应">
+    <ResponseField name="messages" type="string">
+      错误信息描述
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## 示例
+
+<RequestExample>
+
+```python Python
+import requests
+
+task_id = "12345"  # 您的任务ID
+url = f"https://api.scenext.cn/api/get_status/{task_id}"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const taskId = "12345";  // 您的任务ID
+const url = `https://api.scenext.cn/api/get_status/${taskId}`;
+const headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```bash cURL
+curl -X GET https://api.scenext.cn/api/get_status/12345 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 进行中
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "IN_PROGRESS",
+        "progress": [
+            {
+                "id": "frame1",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+            },
+            {
+                "id": "frame2",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+            },
+            ...
+        ]
+    }
+}
+```
+
+```json 已完成
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "COMPLETED",
+        "progress": [
+            {
+                "id": "frame1",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+            },
+            {
+                "id": "frame2",
+                "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+            },
+            ...
+        ],
+        "result": [
+            {
+                "type": "video",
+                "content": "https://oss.scenext.cn/Video/d988d4d9-72f0-4b76-97b0-ca974335dcf4/Manimed6e7bae-cb5d-4e75-a6ae-b4beced80c92.mp4?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749288010&Signature=CZRkEsLpWctM9MS3v7IbpRvMcKI%3D"
+            }
+        ]
+    }
+}
+```
+
+```json 失败
+{
+    "status": "success",
+    "data": {
+        "task_id": "12345",
+        "status": "FAILED",
+        "result": [
+            {
+                "type": "text",
+                "content": "任务执行失败"
+            }
+        ]
+    }
+}
+```
+
+```json 错误响应
+{
+    "status": "error",
+    "data": {
+        "messages": "Server error: Task not found"
+    }
+}
+```
+
+</ResponseExample>
+
+## 轮询建议
+
+建议您按以下方式轮询任务状态：
+
+1. 任务创建后立即查询一次
+2. 之后每30秒查询一次
+3. 当状态为 `COMPLETED` 或 `FAILED` 时停止轮询
+
+## 状态说明
+
+- **IN_PROGRESS**: 任务正在处理中，可以继续轮询
+- **COMPLETED**: 任务已成功完成，可以获取结果
+- **FAILED**: 任务处理失败，请检查错误信息

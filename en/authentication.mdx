@@ -1,0 +1,87 @@
+---
+title: "Authentication"
+description: "Learn how to authenticate using API keys"
+---
+
+# Authentication
+
+The Scenext API uses Bearer Token authentication. You need to include your API key in the Header of each API request.
+
+## Getting API Key
+
+1. Log in to [scenext.cn](https://scenext.cn)
+2. Go to your personal center
+3. Find "API Keys Management"
+4. Click "Create API Key"
+5. Copy and save your API key
+
+<Warning>
+Please keep your API key safe and do not expose it in client-side code.
+</Warning>
+
+## Using API Key
+
+Include the following Header in each API request:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+```
+
+## Examples
+
+### Python
+
+```python
+import requests
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(
+    "https://api.scenext.cn/api/gen_video",
+    headers=headers,
+    json=your_data
+)
+```
+
+### JavaScript
+
+```javascript
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+};
+
+fetch('https://api.scenext.cn/api/gen_video', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(your_data)
+});
+```
+
+### cURL
+
+```bash
+curl -X POST https://api.scenext.cn/api/gen_video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Question", "answer": "Reference answer"}'
+```
+
+## Error Handling
+
+If authentication fails, the API will return a 401 status code:
+
+```json
+{
+    "status": "error",
+    "data": {
+        "messages": "Unauthorized: Invalid API key"
+    }
+}
+```
+
+Make sure your API key is valid and correctly formatted.

@@ -1,0 +1,220 @@
+---
+title: "Webhook Callbacks"
+description: "Learn how to receive and verify task completion callback notifications"
+---
+
+# Webhook Callbacks
+
+When you provide a `notify_url` when creating a video task, Scenext will send callback notifications to your server when the task completes (successfully or fails).
+
+## Callback Data Format
+
+Scenext will send a POST request to your `notify_url` with the following data:
+
+<ResponseField name="task_id" type="string">
+  Task ID
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Task status: `COMPLETED`, `FAILED`, or `IN_PROGRESS`
+</ResponseField>
+
+<ResponseField name="progress" type="array">
+  Task progress information list
+</ResponseField>
+
+<ResponseField name="result" type="array">
+  Task result (only exists when completed)
+</ResponseField>
+
+<ResponseField name="timestamp" type="integer">
+  Timestamp (Unix timestamp)
+</ResponseField>
+
+## Signature Verification
+
+For security, each callback request includes an HMAC-SHA256 signature in the `X-Signature` request header.
+
+### Verification Steps
+
+1. Get the JSON string of the request body
+2. Generate HMAC-SHA256 signature using your API key
+3. Compare the generated signature with the `X-Signature` header value
+
+### Python Verification Example
+
+```python
+import hmac
+import hashlib
+import json
+from flask import Flask, request
+
+app = Flask(__name__)
+
+def verify_signature(payload, signature, api_key):
+    """
+    Verify HMAC-SHA256 signature
+    """
+    # Convert payload to JSON string (sorted by keys)
+    if isinstance(payload, dict):
+        payload_str = json.dumps(payload, sort_keys=True)
+    else:
+        payload_str = str(payload)
+    
+    # Generate signature
+    expected_signature = hmac.new(
+        key=api_key.encode('utf-8'),
+        msg=payload_str.encode('utf-8'),
+        digestmod=hashlib.sha256
+    ).hexdigest()
+    
+    return hmac.compare_digest(expected_signature, signature)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # Get signature
+    signature = request.headers.get('X-Signature')
+    if not signature:
+        return 'Missing signature', 400
+    
+    # Get request data
+    data = request.get_json()
+    
+    # Verify signature
+    api_key = "YOUR_API_KEY"  # Your API key
+    if not verify_signature(data, signature, api_key):
+        return 'Invalid signature', 401
+    
+    # Process callback data
+    task_id = data.get('task_id')
+    status = data.get('status')
+    result = data.get('result')
+    
+    if status == 'COMPLETED':
+        # Task completed, process result
+        video_url = result.get('video_url')
+        print(f"Task {task_id} completed. Video URL: {video_url}")
+    elif status == 'FAILED':
+        # Task failed, handle error
+        error = result.get('error')
+        print(f"Task {task_id} failed. Error: {error}")
+    
+    return 'OK', 200
+```
+
+### Node.js Verification Example
+
+```javascript
+const crypto = require('crypto');
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+function verifySignature(payload, signature, apiKey) {
+    // Convert payload to JSON string (sorted by keys)
+    const payloadStr = JSON.stringify(payload, Object.keys(payload).sort());
+    
+    // Generate signature
+    const expectedSignature = crypto
+        .createHmac('sha256', apiKey)
+        .update(payloadStr, 'utf8')
+        .digest('hex');
+    
+    return crypto.timingSafeEqual(
+        Buffer.from(expectedSignature, 'hex'),
+        Buffer.from(signature, 'hex')
+    );
+}
+
+app.post('/webhook', (req, res) => {
+    const signature = req.headers['x-signature'];
+    if (!signature) {
+        return res.status(400).send('Missing signature');
+    }
+    
+    const data = req.body;
+    const apiKey = 'YOUR_API_KEY';  // Your API key
+    
+    if (!verifySignature(data, signature, apiKey)) {
+        return res.status(401).send('Invalid signature');
+    }
+    
+    // Process callback data
+    const { task_id, status, result } = data;
+    
+    if (status === 'COMPLETED') {
+        console.log(`Task ${task_id} completed. Video URL: ${result.video_url}`);
+    } else if (status === 'FAILED') {
+        console.log(`Task ${task_id} failed. Error: ${result.error}`);
+    }
+    
+    res.status(200).send('OK');
+});
+```
+
+## Callback Examples
+
+### Task Completion Callback
+
+```json
+{
+    "task_id": "12345",
+    "status": "COMPLETED",
+    "progress": [
+        {
+            "id": "frame1",
+            "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+        },
+        {
+            "id": "frame2",
+            "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+        },
+        ...
+    ],
+    "result": [
+        {
+            "type": "video",
+            "content": "https://oss.scenext.cn/Video/d988d4d9-72f0-4b76-97b0-ca974335dcf4/Manimed6e7bae-cb5d-4e75-a6ae-b4beced80c92.mp4?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749288010&Signature=CZRkEsLpWctM9MS3v7IbpRvMcKI%3D"
+        }
+    ],
+    "timestamp": 1672531200
+}
+```
+
+### Task Failure Callback
+
+```json
+{
+    "task_id": "12345",
+    "status": "FAILED",
+    "progress": [
+        {
+            "id": "frame1",
+            "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame1.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287113&Signature=ZofSGtAyhO3KolVaMC8ICUZJNWE%3D"
+        },
+        {
+            "id": "frame2",
+            "image": "https://oss.scenext.cn/frame_img/d988d4d9-72f0-4b76-97b0-ca974335dcf4/ed6e7bae-cb5d-4e75-a6ae-b4beced80c92/frame3.png?OSSAccessKeyId=LTAI5tDkzckmQzw7eKj4s47h&Expires=1749287134&Signature=5zB4nuv7PQkPDCzbKLMQBlb9f%2Bo%3D"
+        },
+        ...
+    ],
+    "result": [
+        {
+            "type": "text",
+            "content": "Task execution failed"
+        }
+    ],
+    "timestamp": 1672531200
+}
+```
+
+## Important Notes
+
+<Warning>
+- Please ensure to verify callback signatures for security
+- Callback notifications do not require a response, this callback notification will only be sent once
+</Warning>
+- If the callback fails, Scenext will retry several times
+- Recommend implementing idempotency to avoid duplicate processing of the same callback
+</Warning>
