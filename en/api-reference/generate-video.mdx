@@ -10,8 +10,6 @@ This API is used to create video generation tasks.
 
 ## Request
 
-question and questionImages must include at least one.
-
 ### Request Headers
 
 <ParamField header="Authorization" type="string" required>
@@ -24,6 +22,8 @@ question and questionImages must include at least one.
 
 ### Request Parameters
 
+question and questionImages must include at least one.
+
 <ParamField body="question" type="string" required>
   Question content (text format)
 </ParamField>
@@ -32,7 +32,7 @@ question and questionImages must include at least one.
   Question content (image format), input image URLs or base64
 </ParamField>
 
-<ParamField body="answer" type="string" required>
+<ParamField body="answer" type="string" >
   Reference answer (text format): ensures accurate explanatory content generation
 </ParamField>
 
