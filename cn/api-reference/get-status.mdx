@@ -46,9 +46,13 @@ description: "查询视频生成任务的状态和进度"
     <ResponseField name="progress" type="array">
       任务进度信息列表
     </ResponseField>
+
+    <ResponseField name="consumption" type="array">
+      积分消耗情况（仅在状态为 COMPLETED 和 FAILED 时存在）
+    </ResponseField>
     
     <ResponseField name="result" type="array">
-      任务结果（仅在状态为 COMPLETED 时存在）
+      任务结果（仅在状态为 COMPLETED 和 FAILED 时存在）
     </ResponseField>
   </Expandable>
   
@@ -138,6 +142,13 @@ curl -X GET https://api.scenext.cn/api/get_status/12345 \
             },
             ...
         ],
+        "consumption":[
+            {
+                "type": "score",
+                "value": 20,
+                "detail": "生成视频解析扣除"
+            }
+        ],
         "result": [
             {
                 "type": "video",
@@ -154,6 +165,13 @@ curl -X GET https://api.scenext.cn/api/get_status/12345 \
     "data": {
         "task_id": "12345",
         "status": "FAILED",
+        "consumption":[
+            {
+                "type": "score",
+                "value": 0,
+                "detail": "生成失败，不消耗积分"
+            }
+        ],
         "result": [
             {
                 "type": "text",

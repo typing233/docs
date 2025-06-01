@@ -46,9 +46,13 @@ This API is used to query the current status, progress, and results of video gen
     <ResponseField name="progress" type="array">
       Task progress information list
     </ResponseField>
+
+    <ResponseField name="consumption" type="array">
+      Points consumption situation (only exists when status is COMPLETED or FAILED)
+    </ResponseField>
     
     <ResponseField name="result" type="array">
-      Task result (only exists when status is COMPLETED)
+      Task result (only exists when status is COMPLETED or FAILED)
     </ResponseField>
   </Expandable>
   
@@ -138,6 +142,13 @@ curl -X GET https://api.scenext.cn/api/get_status/12345 \
             },
             ...
         ],
+        "consumption":[
+            {
+                "type": "score",
+                "value": 20,
+                "detail": "Generate video analysis deduction"
+            }
+        ],
         "result": [
             {
                 "type": "video",
@@ -154,6 +165,13 @@ curl -X GET https://api.scenext.cn/api/get_status/12345 \
     "data": {
         "task_id": "12345",
         "status": "FAILED",
+        "consumption":[
+            {
+                "type": "score",
+                "value": 0,
+                "detail": "Generation failed. No points consumed."
+            }
+        ],
         "result": [
             {
                 "type": "text",
