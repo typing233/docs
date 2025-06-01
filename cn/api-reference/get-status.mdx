@@ -10,6 +10,14 @@ description: "查询视频生成任务的状态和进度"
 
 ## 请求
 
+### 请求头
+
+<ParamField header="Authorization" type="string" required>
+  API密钥认证，格式：`Bearer YOUR_API_KEY`
+</ParamField>
+
+### 路径参数
+
 <ParamField path="task_id" type="string" required>
   任务ID，从创建视频接口返回
 </ParamField>

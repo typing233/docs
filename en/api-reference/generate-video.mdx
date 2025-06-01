@@ -12,6 +12,18 @@ This API is used to create video generation tasks.
 
 question and questionImages must include at least one.
 
+### Request Headers
+
+<ParamField header="Authorization" type="string" required>
+  API key authentication, format: `Bearer YOUR_API_KEY`
+</ParamField>
+
+<ParamField header="Content-Type" type="string" required>
+  Request content type, must be: `application/json`
+</ParamField>
+
+### Request Parameters
+
 <ParamField body="question" type="string" required>
   Question content (text format)
 </ParamField>

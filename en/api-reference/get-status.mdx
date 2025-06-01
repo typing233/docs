@@ -10,6 +10,14 @@ This API is used to query the current status, progress, and results of video gen
 
 ## Request
 
+### Request Headers
+
+<ParamField header="Authorization" type="string" required>
+  API key authentication, format: `Bearer YOUR_API_KEY`
+</ParamField>
+
+### Path Parameters
+
 <ParamField path="task_id" type="string" required>
   Task ID returned from the create video interface
 </ParamField>

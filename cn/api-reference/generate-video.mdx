@@ -12,6 +12,18 @@ description: "创建视频生成任务"
 
 question和questionImages中至少输入一个。
 
+### 请求头
+
+<ParamField header="Authorization" type="string" required>
+  API密钥认证，格式：`Bearer YOUR_API_KEY`
+</ParamField>
+
+<ParamField header="Content-Type" type="string" required>
+  请求内容类型，必须为：`application/json`
+</ParamField>
+
+### 请求参数
+
 <ParamField body="question" type="string" required>
   问题内容（文本形式）
 </ParamField>
