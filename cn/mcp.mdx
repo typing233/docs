@@ -1,0 +1,69 @@
+---
+title: "MCP服务"
+description: "了解Scenext 的MCP服务器"
+---
+# Scenext MCP 服务器
+
+Scenext MCP 服务器是一个基于 Model Context Protocol (MCP) 的视频生成服务，允许您通过简单的工具调用生成教学讲解视频。
+
+## 配置
+
+### 本地访问（UVX 模式）
+
+在您的 Claude Desktop 配置文件中添加以下配置：
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "command": "uvx", 
+      "args": ["scenext-mcp"],
+      "env": {
+        "SCENEXT_API_KEY": "your_actual_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### 远程访问（SSE 模式）
+
+使用查询参数方式：
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "type": "sse",
+      "url": "https://mcp.scenext.cn/sse?api_key=your_actual_api_key_here"
+    }
+  }
+}
+```
+
+使用 Authorization 头部方式：
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "type": "sse",
+      "url": "https://mcp.scenext.cn/sse",
+      "headers": {
+        "Authorization": "Bearer your_actual_api_key_here"
+      }
+    }
+  }
+}
+```
+
+## 可用工具
+
+### gen_video
+
+生成教学讲解视频的主要工具。
+
+### query_video_status
+
+查询视频生成任务的状态。
+

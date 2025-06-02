@@ -29,7 +29,8 @@
             "group": "集成指南",
             "pages": [
               "cn/pricing",
-              "cn/signature-verification"
+              "cn/signature-verification",
+              "cn/mcp"
             ]
           }
         ]
@@ -53,7 +54,8 @@
             "group": "Integration Guide",
             "pages": [
               "en/pricing",
-              "en/signature-verification"
+              "en/signature-verification",
+              "en/mcp"
             ]
           }
         ]

@@ -1,0 +1,70 @@
+
+---
+title: "MCP Service"
+description: "Learn about Scenext's MCP server"
+---
+# Scenext MCP Server
+
+Scenext MCP Server is a video generation service based on the Model Context Protocol (MCP) that allows you to generate educational explanation videos through simple tool calls.
+
+## Configuration
+
+### Local Access (UVX Mode)
+
+Add the following configuration to your Claude Desktop configuration file:
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "command": "uvx", 
+      "args": ["scenext-mcp"],
+      "env": {
+        "SCENEXT_API_KEY": "your_actual_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### Remote Access (SSE Mode)
+
+Using query parameter approach:
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "type": "sse",
+      "url": "https://mcp.scenext.cn/sse?api_key=your_actual_api_key_here"
+    }
+  }
+}
+```
+
+Using Authorization header approach:
+
+```json
+{
+  "mcpServers": {
+    "scenext": {
+      "type": "sse",
+      "url": "https://mcp.scenext.cn/sse",
+      "headers": {
+        "Authorization": "Bearer your_actual_api_key_here"
+      }
+    }
+  }
+}
+```
+
+## Available Tools
+
+### gen_video
+
+The main tool for generating educational explanation videos.
+
+### query_video_status
+
+Query the status of video generation tasks.
+
