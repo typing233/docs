@@ -26,20 +26,7 @@ Scenext MCP 服务器是一个基于 Model Context Protocol (MCP) 的视频生�
 }
 ```
 
-### 远程访问（SSE 模式）
-
-使用查询参数方式：
-
-```json
-{
-  "mcpServers": {
-    "scenext": {
-      "type": "sse",
-      "url": "https://mcp.scenext.cn/sse?api_key=your_actual_api_key_here"
-    }
-  }
-}
-```
+### 远程访问（streamable-http）
 
 使用 Authorization 头部方式：
 
@@ -47,8 +34,8 @@ Scenext MCP 服务器是一个基于 Model Context Protocol (MCP) 的视频生�
 {
   "mcpServers": {
     "scenext": {
-      "type": "sse",
-      "url": "https://mcp.scenext.cn/sse",
+      "type": "streamable-http",
+      "url": "https://mcp.scenext.cn/mcp",
       "headers": {
         "Authorization": "Bearer your_actual_api_key_here"
       }
