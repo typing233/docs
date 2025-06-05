@@ -35,7 +35,7 @@ Scenext MCP 服务器是一个基于 Model Context Protocol (MCP) 的视频生�
   "mcpServers": {
     "scenext": {
       "type": "streamable-http",
-      "url": "https://mcp.scenext.cn/mcp",
+      "url": "https://mcp.scenext.cn/mcp/",
       "headers": {
         "Authorization": "Bearer your_actual_api_key_here"
       }
@@ -43,6 +43,7 @@ Scenext MCP 服务器是一个基于 Model Context Protocol (MCP) 的视频生�
   }
 }
 ```
+有的客户端不支持headers字段，可以手动配置添加请求头Authorization=Bearer your_actual_api_key_here
 
 ## 可用工具
 

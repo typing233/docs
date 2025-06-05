@@ -27,20 +27,7 @@ Add the following configuration to your Claude Desktop configuration file:
 }
 ```
 
-### Remote Access (SSE Mode)
-
-Using query parameter approach:
-
-```json
-{
-  "mcpServers": {
-    "scenext": {
-      "type": "sse",
-      "url": "https://mcp.scenext.cn/sse?api_key=your_actual_api_key_here"
-    }
-  }
-}
-```
+### Remote Access (streamable-http)
 
 Using Authorization header approach:
 
@@ -48,8 +35,8 @@ Using Authorization header approach:
 {
   "mcpServers": {
     "scenext": {
-      "type": "sse",
-      "url": "https://mcp.scenext.cn/sse",
+      "type": "streamable-http",
+      "url": "https://mcp.scenext.cn/mcp/",
       "headers": {
         "Authorization": "Bearer your_actual_api_key_here"
       }
@@ -57,6 +44,7 @@ Using Authorization header approach:
   }
 }
 ```
+Some MCP clients do not support the headers field. You can manually configure and add the request header "Authorization=Bearer your_actual_api_key_here".
 
 ## Available Tools
 
