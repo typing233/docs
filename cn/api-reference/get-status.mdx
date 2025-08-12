@@ -54,6 +54,18 @@ description: "查询视频生成任务的状态和进度"
     <ResponseField name="result" type="array">
       任务结果（仅在状态为 COMPLETED 和 FAILED 时存在）
     </ResponseField>
+
+    <ResponseField name="title" type="string">
+      视频标题（仅在状态为 COMPLETED 时存在）
+    </ResponseField>
+
+    <ResponseField name="created_at" type="datetime">
+      任务创建时间（仅在状态为 COMPLETED 时存在），类型为 ISO 8601 的扩展格式
+    </ResponseField>
+
+    <ResponseField name="finish_at" type="datetime">
+      任务完成时间（仅在状态为 COMPLETED 时存在），类型为 ISO 8601 的扩展格式
+    </ResponseField>
   </Expandable>
   
   <Expandable title="错误响应">
